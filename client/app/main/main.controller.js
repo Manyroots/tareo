@@ -1,27 +1,31 @@
 'use strict';
 
 angular.module('tareoApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
-    $scope.awesomeThings = [];
+  .controller('MainCtrl', function ($scope, $http, socket, Auth, $location) {
 
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
-    });
+    $scope.isLoggedIn = Auth.isLoggedIn();
+    $scope.user = {};
+    $scope.errors = {};
+    /*
+    * Login desde la pagina principal.
+    */
+    $scope.login = function(form) {
+      $scope.submitted = true;
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
-        return;
+      if(form.$valid) {
+        Auth.login({
+          email: $scope.user.email,
+          password: $scope.user.password
+        })
+        .then( function() {
+          // Logged in, redirect to home
+          //$location.path('/');
+          $scope.isLoggedIn = true;
+        })
+        .catch( function(err) {
+          $scope.errors.other = err.message;
+        });
       }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
     };
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
-    };
-
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
-    });
   });
