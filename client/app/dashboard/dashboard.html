@@ -1,31 +1,54 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-
-<div class="col-md-12">
-  <input type="search" ng-model="q" placeholder="filter things..." />
-  <span>{{results.length}}</span>
-  <br>
-  <div class="panel panel-primary animate-repeat" ng-repeat="thing in things | filter:q as results">
-    <div class="panel-heading">{{thing.name}}</div>
-    <div class="panel-body">
-      <p>{{thing.info}}</p>
-    </div>
-    <div class="panel-body" ng-if="thing.isEditing">
-      <input type="text" ng-model="thingTitle" placeholder="new title" />
-      <input type="text" ng-model="thingInfo" placeholder="new info" />
-      <button type="button" class="btn btn-default" ng-click="saveEdit($index,thingTitle,thingInfo)">Save</button>
-    </div>
-    <div class="panel-footer">
-      <p>
-          {{thing.isEditing}}
-      </p>
-      <div class="btn-group" role="group" aria-label="...">
-        <button type="button" class="btn btn-default" ng-click="edit($index)">Edit</button>
-        <button type="button" class="btn btn-default" ng-click="remove($index)">Remove</button>
-        <button type="button" class="btn btn-default" ng-click="hide($index)">Hide</button>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <input type="search" ng-model="q" placeholder="filter things..." />
+      <span>{{results.length}}</span>
+      <br>
+      <button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">New task</button>
+      <hr>
+      <div collapse="isCollapsed">
+        <div class="well well-lg">
+          <input type="text" ng-model="taskName" placeholder="new Name" />
+          <input type="text" ng-model="taskInfo" placeholder="new info" />
+          <label>
+            <input type="checkbox" ng-model="taskStatus"> Active
+          </label>
+          <button type="button" class="btn btn-default" ng-click="create(taskName,taskInfo,taskStatus)">Save</button>
+        </div>
       </div>
     </div>
   </div>
-  <div class="animate-repeat" ng-if="results.length == 0">
-    <strong>No results found...</strong>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-primary animate-repeat" ng-repeat="thing in things | filter:q as results">
+        <div class="panel-heading">{{thing.name}}
+
+          <span class="glyphicon glyphicon-ok" ng-if="thing.active"></span>
+          <span class="glyphicon glyphicon-remove" ng-if="!thing.active"></span>
+
+        </div>
+        <div class="panel-body">
+          <p>{{thing.info}}</p>
+        </div>
+        <div class="panel-body" ng-if="thing.isEditing">
+          <input type="text" ng-model="thingTitle" placeholder="new title" />
+          <input type="text" ng-model="thingInfo" placeholder="new info" />
+          <button type="button" class="btn btn-default" ng-click="saveEdit($index,thingTitle,thingInfo)">Save</button>
+        </div>
+        <div class="panel-footer">
+          <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" ng-click="edit($index)">Edit</button>
+            <button type="button" class="btn btn-default" ng-click="remove($index)">Remove</button>
+            <button type="button" class="btn btn-default" ng-click="hide($index)">Hide</button>
+          </div>
+        </div>
+      </div>
+      <div class="animate-repeat" ng-if="results.length == 0">
+        <strong>No results found...</strong>
+      </div>
+    </div>
+
   </div>
+
 </div>
